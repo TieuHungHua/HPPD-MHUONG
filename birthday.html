@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap&subset=vietnamese"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <audio id="myAudio" autoplay loop>
+        <source src="public/HBPD.mp3" type="audio/mpeg">
+    </audio>
+
+    <style>
+        #myAudio {
+            display: none;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 95%;
+            font-family: 'Baloo 2', cursive;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Nền trời sao */
+        #starCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
+
+        .card {
+            background: white;
+            color: brown;
+            padding: 10px 10px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            z-index: 1;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card::after {
+            content: "💖";
+            position: absolute;
+            right: -40px;
+        }
+
+        @keyframes pointing {
+            0% {
+                transform: translateY(-50%) translateX(0);
+            }
+
+            50% {
+                transform: translateY(-50%) translateX(-10px);
+            }
+
+            100% {
+                transform: translateY(-50%) translateX(0);
+            }
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            right: 270px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 20px solid red;
+            animation: pointing 1s infinite;
+        }
+
+        /* Grid ảnh */
+        .photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 10px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0;
+            align-items: center;
+            justify-content: center;
+            place-items: center;
+        }
+
+        /* Mobile: chia 2 cột */
+        @media (max-width: 768px) {
+            .photos {
+                grid-template-columns: repeat(2, 1fr);
+                align-items: center;
+                justify-content: center;
+                place-items: center;
+            }
+        }
+
+        .photos img {
+            width: fit-content;
+            height: auto;
+            object-fit: cover;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            border-radius: 10px;
+        }
+
+        .photos img.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Modal (lá thư) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        body.modal-open {
+            overflow-y: hidden;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .letter {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 750px;
+            text-align: center;
+            font-size: 1.2rem;
+            position: relative;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @media (max-width: 768px) {
+            .letter {
+                padding: 20px;
+                font-size: 1rem;
+                margin: 15px;
+                max-width: 90%;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: red;
+        }
+
+        @media (max-width: 768px) {
+            .modal {
+                padding: 10px;
+                align-items: flex-start;
+                padding: 0;
+            }
+
+            .letter {
+                padding: 15px;
+                font-size: 1rem;
+                line-height: 1.5;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                max-width: 100%;
+                border-radius: 8px;
+            }
+
+            .close-btn {
+                top: 8px;
+                right: 10px;
+                font-size: 1.3rem;
+            }
+
+            .letter h2 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .letter p {
+                font-size: 0.95rem;
+            }
+
+            .letter a {
+                display: inline-block;
+                margin-top: 15px;
+                font-size: 1rem;
+                color: #007aff;
+                text-decoration: underline;
+                word-break: break-word;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(2deg);
+            }
+
+            75% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        .note {
+            color: #2196F3;
+            animation: wiggle 0.5s infinite;
+        }
+
+        .flip-card {
+            width: 100%;
+            max-width: 200px;
+            height: 320px;
+            perspective: 1000px;
+            margin: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .flip-card {
+                max-width: 160px;
+                height: 300px;
+            }
+        }
+
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            border-radius: 10px;
+        }
+
+        .flip-card.flipped .flip-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-front,
+        .flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            place-content: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .flip-front img {
+            width: 100%;
+            text-align: center;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+            margin: 0;
+        }
+
+        .flip-back {
+            height: 300px;
+            background-color: white;
+            color: brown;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            transform: rotateY(180deg);
+            font-size: 1rem;
+        }
+
+        .blank {
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Canvas nền trời sao -->
+    <canvas id="starCanvas"></canvas>
+
+    <div class="note">Mở thiệp ở đây nè! 🌟</div>
+    <div class="card" id="birthdayCard">Chúc Mừng Sinh Nhật!</div>
+
+    <div class="blank"></div>
+    <div class="note">Mỗi tấm ảnh là một lá thư mình gửi đến em đấy!🌟</div>
+    <div class="note">Xem từng cái nhá 🌟</div>
+
+
+    <!-- Ảnh -->
+    <div class="photos" id="photoGrid">
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p1.jpg" alt="Ảnh 1">
+                </div>
+                <div class="flip-back">
+                    <p>Hi, chào em, chúc em sn vui vẻ né 💖</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p2.jpg" alt="Ảnh 2">
+                </div>
+                <div class="flip-back">
+                    <p>Tuổi mới, chúc em hạnh phúc theo cách em chọn 🌻</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p3.jpg" alt="Ảnh 3">
+                </div>
+                <div class="flip-back">
+                    <p>Đây là món quà mà người anh già này thức đêm chuẩn bị cho em đớ 🌟</p>
+                </div>
+            </div>
+        </div>
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p5.png" alt="Ảnh 5">
+                </div>
+                <div class="flip-back">
+                    <p>Anh đang ở 1 góc phòng nào đó tạo cho em trang web này nè - trời sao 💫</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p4.jpg" alt="Ảnh 4">
+                </div>
+                <div class="flip-back">
+                    <p>Chúc em hạnh phúc từ những điều nhỏ bé 🎂</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p6.jpg" alt="Ảnh 6">
+                </div>
+                <div class="flip-back">
+                    <p>Mong em luôn mạnh mẽ 💐</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p7.jpg" alt="Ảnh 7">
+                </div>
+                <div class="flip-back">
+                    <p>Đừng áp lực về gia đình quá, em có 1 gia đình tuyệt vời đó 🌼</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p8.png" alt="Ảnh 8">
+                </div>
+                <div class="flip-back">
+                    <p>Hành trình mới sẽ mang em đến những chân trời mới 🌏</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p9.jpg" alt="Ảnh 9">
+                </div>
+                <div class="flip-back">
+                    <p>Nhiều lúc anh thấy em khùng khùng 🤡 Mà kệ đi, ae mình cũng khùng điên như nhau mà =&#41;&#41;
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="flip-card">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <img src="public/p10.jpg" alt="Ảnh 9">
+                </div>
+                <div class="flip-back">
+                    <p>Lớn rồi không được khóc nhè, lớn rồi thì nên để cảm xúc làm con tim mình sâu sắc hơn hì 🎨 and
+                        bớt mat mat </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal lá thư -->
+    <div class="modal" id="modal">
+        <div class="letter">
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <h2>💌 Gửi đến Bé Phương 💌</h2>
+            <p>
+                Hôm nay là một ngày thật đặc biệt – ngày mà một thiên thần bé nhỏ đã đến với thế giới này. <br>
+                Chúc Em luôn rạng rỡ như ánh mặt trời, dịu dàng như ánh trăng và lung linh như những vì sao. 🌟<br>
+                Mong rằng mỗi buổi sáng khi thức dậy, Phương sẽ cảm thấy tim mình đầy ắp niềm vui,
+                và mỗi tối đi ngủ đều mang theo những giấc mơ thật ngọt ngào. 💖<br><br>
+
+                Trong suốt chặng đường sắp tới, mong Em sẽ luôn mạnh mẽ,
+                vững vàng trước mọi khó khăn và không bao giờ quên rằng mình xứng đáng nhận những điều tốt đẹp nhất.
+                ✨<br><br>
+
+                Cảm ơn em đã xuất hiện, mang đến tiếng cười và những kỷ niệm thật đáng trân trọng. <br>
+                Mong rằng chúng ta sẽ còn cơ hội cùng nhau đi qua thật nhiều mùa sinh nhật nữa. 🎂<br><br>
+
+                💗 Cố lên nhé bé 💗<br>
+                – Tieu Hung Hua –
+            </p>
+            <a href="https://www.facebook.com/messages/e2ee/t/679230931086405" target="_blank">
+                Quý khách có gì ý kiến gì thì nhấn vào dòng này@! MÀY NHẤN TAU ĐẤM CHO @@
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Âm thanh
+        var audio = document.getElementById("myAudio");
+        audio.volume = 0.3;
+
+        // Lật thẻ ảnh
+        document.querySelectorAll(".flip-card").forEach(card => {
+            card.addEventListener("click", () => {
+                card.classList.toggle("flipped");
+            });
+        });
+
+        // Nền trời sao
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = [];
+        const shootingStars = [];
+
+        function createStars() {
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5,
+                    alpha: Math.random(),
+                    speed: Math.random() * 0.02
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(star => {
+                ctx.globalAlpha = star.alpha;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+                star.alpha += star.speed;
+                if (star.alpha <= 0 || star.alpha >= 1) {
+                    star.speed = -star.speed;
+                }
+            });
+        }
+
+        function createShootingStar() {
+            shootingStars.push({
+                x: Math.random() * canvas.width,
+                y: 0,
+                len: Math.random() * 80 + 10,
+                speed: Math.random() * 6 + 4,
+                angle: Math.PI / 4
+            });
+        }
+
+        function drawShootingStars() {
+            shootingStars.forEach((s, i) => {
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(s.x, s.y);
+                ctx.lineTo(s.x - s.len * Math.cos(s.angle), s.y - s.len * Math.sin(s.angle));
+                ctx.stroke();
+                s.x += s.speed;
+                s.y += s.speed;
+                if (s.x > canvas.width || s.y > canvas.height) {
+                    shootingStars.splice(i, 1);
+                }
+            });
+        }
+
+        function animateStars() {
+            drawStars();
+            drawShootingStars();
+            if (Math.random() < 0.005) {
+                createShootingStar();
+            }
+            requestAnimationFrame(animateStars);
+        }
+
+        createStars();
+        animateStars();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Ảnh xuất hiện dần
+        const images = document.querySelectorAll(".photos img");
+        const indexes = Array.from(images.keys());
+        let delay = 0;
+        while (indexes.length > 0) {
+            const randomIndex = Math.floor(Math.random() * indexes.length);
+            const imgIndex = indexes.splice(randomIndex, 1)[0];
+            setTimeout(() => {
+                images[imgIndex].classList.add("show");
+            }, delay);
+            delay += 300;
+        }
+
+        // Modal lá thư
+        const card = document.getElementById("birthdayCard");
+        const modal = document.getElementById("modal");
+        const closeBtn = document.getElementById("closeBtn");
+
+        card.addEventListener("click", () => {
+            modal.classList.add("show");
+        });
+
+        closeBtn.addEventListener("click", () => {
+            modal.classList.remove("show");
+        });
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.classList.remove("show");
+            }
+        });
+
+        // Mobile: chạm 1 cái để bật nhạc (tránh chặn autoplay)
+        if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            document.addEventListener('touchstart', function playMusicOnce() {
+                audio.play().catch(() => { });
+                document.removeEventListener('touchstart', playMusicOnce);
+            });
+        }
+    </script>
+</body>
+
+</html>

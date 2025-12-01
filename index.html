@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra ngày sinh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            /* Nền đen cho hiệu ứng pháo hoa */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Nền pháo hoa */
+        #fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Khung quà tặng */
+        .gift-box {
+            position: relative;
+            z-index: 2;
+            /* Đặt lớp quà tặng ở trên */
+            width: 90vw;
+            max-width: 450px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 10px solid #E6C0C0;
+            /* Viền màu hồng */
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.7);
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        /* Hiệu ứng nhấp nháy cho khung quà */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: #E6C0C0;
+            /* Màu hồng đậm */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            /* Căn giữa chữ trong input */
+        }
+
+        button {
+            background-color: #E6C0C0;
+            color: black;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #db8a8a;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .goi-i {
+            color: rgb(173, 168, 168);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="fireworks-container"></div>
+
+    <div class="gift-box">
+        <h1>Sinh nhật của bạn là ngày:</h1>
+        <p class="goi-i">Gợi ý mẫu: [20/09/2003]</p>
+        <input type="text" id="birthdayInput" placeholder="Là ngày ...">
+        <button onclick="checkBirthday()">Mở quà!</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // JavaScript cho pháo hoa
+        const container = document.getElementById('fireworks-container');
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            const size = Math.random() * 5 + 5;
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            const duration = Math.random() * 1.5 + 1.5;
+
+            firework.style.width = `${size}px`;
+            firework.style.height = `${size}px`;
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
+            firework.style.animation = `explode ${duration}s ease-out forwards`;
+            container.appendChild(firework);
+            firework.addEventListener('animationend', () => { firework.remove(); });
+        }
+
+        const styleSheet = document.createElement("style");
+        styleSheet.type = "text/css";
+        styleSheet.innerText = `
+            @keyframes explode {
+                0% { transform: scale(0); opacity: 1; }
+                50% { transform: scale(2); opacity: 1; }
+                100% { transform: scale(3); opacity: 0; }
+            }
+            .firework {
+                position: absolute;
+                border-radius: 50%;
+                box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
+            }
+        `;
+        document.head.appendChild(styleSheet);
+        setInterval(createFirework, 300);
+
+        // JavaScript kiểm tra ngày sinh
+        function checkBirthday() {
+            const inputDate = document.getElementById('birthdayInput').value;
+            const resultElement = document.getElementById('result');
+            const correctBirthday = "06/12/2004"; // Thay đổi ngày sinh tại đây
+
+            if (inputDate === correctBirthday) {
+                resultElement.textContent = "Chúc mừng, câu trả lời chính xác! 🎉";
+                resultElement.style.color = "#28a745";
+                setTimeout(() => {
+                    // Hành động sau 2 giây
+                    resultElement.textContent = "Chờ chút nhé ...";
+
+                    // Hành động sau 4 giây (tổng cộng), tức là 2 giây sau hành động trên
+                    // Bạn có thể lồng một hàm setTimeout khác vào đây hoặc tính toán lại thời gian.
+                    // Cách tốt hơn là sử dụng một hàm setTimeout duy nhất với tổng thời gian chờ.
+                    setTimeout(() => {
+                        window.location.href = 'hpbd.html';
+                    }, 2000); // 2000ms sau hành động trước, tức là 4000ms tổng cộng
+                }, 2000);
+            } else {
+                resultElement.textContent = "Câu trả lời không chính xác :((, hãy thử lại.";
+                resultElement.style.color = "#dc3545";
+            }
+        }
+    </script>
+</body>
+
+</html>

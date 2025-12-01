@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>🎂 Sinh nhật VV 🎂</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap&subset=vietnamese"
+        rel="stylesheet">
+    <audio id="myAudio" autoplay loop>
+        <source src="public/Be The Sky.mp3" type="audio/mpeg">
+    </audio>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        #myAudio {
+            display: none;
+        }
+
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #countdown {
+            font-size: 5vw;
+            color: pink;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-shadow: 0 0 10px pink, 0 0 20px hotpink;
+            text-align: center;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
+        #nextBtn {
+            display: none;
+            padding: 12px 28px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #76a9d6, #3c6478);
+            color: white;
+            cursor: pointer;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        #nextBtn:hover {
+            background: linear-gradient(45deg, #3c6478, #76a9d6);
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in-text {
+            animation: fadeIn 2.5s forwards;
+        }
+
+        @media (max-width: 480px) {
+            #countdown {
+                top: 35%;
+                font-size: 8vw;
+            }
+
+            #nextBtn {
+                top: 65%;
+                width: 80%;
+                padding: 16px;
+                font-size: 10vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="matrix"></canvas>
+    <div id="countdown"></div>
+    <button id="nextBtn" onclick="window.location.href='birthday.html'">Tiếp tục 🎁</button>
+
+    <script>
+        // MATRIX BACKGROUND
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        const letters = "HAPPYBIRTHDAY".split("");
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array.from({ length: columns }, () => 1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#f88";
+            ctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        // COUNTDOWN
+        let count = 5;
+        const countdownEl = document.getElementById("countdown");
+        countdownEl.textContent = count;
+
+        const nextBtn = document.getElementById("nextBtn");
+        const timer = setInterval(() => {
+            count--;
+            if (count > 0) {
+                countdownEl.textContent = count;
+            } else if (count === 0) {
+                countdownEl.textContent = "🎉 HAPPY BIRTHDAY Bé PHƯƠNGGG";
+                countdownEl.style.color = "#DDAAAA";
+                countdownEl.classList.add("fade-in-text");
+                nextBtn.style.display = "inline-block";
+                nextBtn.classList.add("fade-in-text");
+                clearInterval(timer);
+            }
+        }, 1000);
+
+        // AUDIO SETTINGS
+
+
+        // MOBILE AUDIO PLAY
+        if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            document.addEventListener('touchstart', function playMusicOnce() {
+                var audio = document.getElementById("myAudio");
+                audio.play();
+                document.removeEventListener('touchstart', playMusicOnce);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
